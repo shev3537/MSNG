@@ -1,0 +1,3 @@
+# Игнорировать папки build и src
+build/
+src/
