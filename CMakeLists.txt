@@ -1,40 +1,19 @@
-cmake_minimum_required(VERSION 3.10)
-
-# Установите имя проекта
-project(Client_Server)
-
+cmake_minimum_required(VERSION 3.22)
+project(MobileSystem)
 set(CMAKE_C_STANDARD 99)
 
-# Найти библиотеки pcap
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(PCAP REQUIRED libpcap)
 
-pkg_check_modules(ZMQ REQUIRED libzmq)
-pkg_check_modules(CZMQ REQUIRED libczmq)
+add_executable(client ./tests/client.c)
+target_link_libraries(client zmq pcap)
+add_executable(server ./tests/server.c)
 
-# Найти библиотеки для ZeroMQ и CZMQ
-#find_package(ZMQ REQUIRED)
-#find_package(CZMQ REQUIRED)
 
-# Создайте исполняемые файлы для сервера и клиента
-add_executable(server tests/server.c)
-add_executable(client tests/client.c)
 
-#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
+target_link_libraries(server zmq pcap)
 
-# Свяжите библиотеки с исполняемыми файлами
-target_link_libraries(server ${ZMQ_LIBRARIES} ${CZMQ_LIBRARIES} ${PCAP_LIBRARIES})
-target_link_libraries(client ${ZMQ_LIBRARIES} ${CZMQ_LIBRARIES} ${PCAP_LIBRARIES})
+add_executable(live_capture ./tests/live_capture.c)
+target_link_libraries(live_capture zmq pcap)
 
-# Включите директории заголовков
-target_include_directories(server PUBLIC
-    ${ZMQ_INCLUDE_DIRS}
-    ${CZMQ_INCLUDE_DIRS}
-    ${PCAP_INCLUDE_DIRS}
-)
 
-target_include_directories(client PUBLIC
-    ${ZMQ_INCLUDE_DIRS}
-    ${CZMQ_INCLUDE_DIRS}
-    ${PCAP_INCLUDE_DIRS}
-)
+add_executable(tcp_proxy ./libmzmq/tcp_proxy.cpp)
+target_link_libraries(tcp_proxy zmq pcap)
